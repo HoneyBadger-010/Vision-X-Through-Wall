@@ -7,9 +7,12 @@
 [![Hackathon](https://img.shields.io/badge/Snapdragon_Multiverse-Bengaluru_2026-d6520e?style=for-the-badge)](https://github.com/HoneyBadger-010/Vision-X-Through-Wall)
 [![Platform](https://img.shields.io/badge/Platform-Snapdragon-3253dc?style=for-the-badge&logo=qualcomm&logoColor=white)](https://www.qualcomm.com/)
 [![Phase](https://img.shields.io/badge/Phase_1-Project_Proposal-0f7a5f?style=for-the-badge)](docs/PROPOSAL.md)
-[![License](https://img.shields.io/badge/License-MIT-2f6db0?style=for-the-badge)](LICENSE)
+[![Design Document](https://img.shields.io/badge/Design_Document-read-2f6db0?style=for-the-badge&logo=readthedocs&logoColor=white)](https://htmlpreview.github.io/?https://github.com/HoneyBadger-010/Vision-X-Through-Wall/blob/main/docs/Vision-X_design_document.html)
+[![License](https://img.shields.io/badge/License-MIT-8a94a0?style=for-the-badge)](LICENSE)
 
 **Multi-device AI · AI PC · Mobile · Arduino UNO Q · Qualcomm Cloud AI 100**
+
+📄 **[Read the full design document →](https://htmlpreview.github.io/?https://github.com/HoneyBadger-010/Vision-X-Through-Wall/blob/main/docs/Vision-X_design_document.html)**
 
 </div>
 
@@ -20,6 +23,8 @@
 > *answered **before** the firefighter commits to entering.*
 
 Vision-X is a four-device AI system that helps firefighters and rescue teams locate living people **through walls, across rooms, and smoke** — and **confirm they are alive** — using impulse ultra-wideband (IR-UWB) radar, distributed intelligence, and hands-free spoken guidance. It does not replace the thermal camera; it adds the **see-through-walls, is-it-alive** sense the camera lacks.
+
+> 📄 **Full design document** — [**view it rendered**](https://htmlpreview.github.io/?https://github.com/HoneyBadger-010/Vision-X-Through-Wall/blob/main/docs/Vision-X_design_document.html) (print-friendly HTML, with all figures) · [markdown version](docs/DESIGN.md) · [raw HTML source](docs/Vision-X_design_document.html)
 
 ---
 
