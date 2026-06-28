@@ -37,7 +37,7 @@ on-site fine-tune (capture through the actual partition, IMU-synchronized) ─�
 
 ## Domain-gap strategy
 
-The biggest risk is the gap between cooperative LoS lab data and a real through-smoke, through-wall, moving-sensor scenario. Mitigations:
+The biggest risk is the gap between cooperative LoS lab data and a real through-wall, across-rooms, moving-sensor scenario (often in smoke). Mitigations:
 
 1. **On-site fine-tuning** — capture a small labelled set through the demo partition during the build.
 2. **Motion-inclusive training** — use IMU-synchronized data (MobiVital) so the CNN learns cancellation rather than relying on hand-tuned filters.

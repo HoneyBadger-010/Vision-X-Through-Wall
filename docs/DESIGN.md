@@ -1,6 +1,6 @@
 # Vision-X — Design Document
 
-> **Finding living people through smoke, walls, and darkness — and giving rescue teams a hands-free sense in zero visibility.**
+> **Finding living people through walls, across rooms, and smoke — and giving rescue teams a hands-free sense in zero visibility.**
 >
 > Snapdragon Multiverse Hackathon · Bengaluru — Phase 1 project submission
 > Devices: AI PC · Mobile · Arduino UNO Q · Qualcomm Cloud AI 100
@@ -29,17 +29,17 @@ A print-friendly HTML version of this document is at [`Vision-X_design_document.
 
 ## 1. Abstract
 
-Vision-X is a multi-device AI system that helps firefighters and rescue teams locate living people through smoke, interior walls, and darkness, and confirm they are alive — before breaching a door.
+Vision-X is a multi-device AI system that helps firefighters and rescue teams locate living people through walls, across rooms, and smoke, and confirm they are alive — before entering.
 
-It distributes one capability across four devices, each doing only what that device can. An **Arduino UNO Q** carries an impulse ultra-wideband (IR-UWB) radar that penetrates smoke and walls; it runs on-device AI to confirm a living person from breathing motion and works fully offline. A **mobile device** worn on the firefighter localizes the victim, tracks the firefighter's own path across the building, speaks guidance hands-free into their comms, and shows where every teammate is. A **Snapdragon Copilot+ PC** at the command post fuses every responder and detection into one live building map, predicts where people are likely trapped, and raises a downed-firefighter alarm. **Qualcomm Cloud AI 100** trains the edge models and, from the building's blueprint, simulates collapse and fire spread to predict a heatmap of where people are likely trapped — and coordinates multiple teams when an uplink exists. Each tier keeps working if the one above it loses connectivity — the reality of disaster response, and a direct demonstration of distributed edge-to-cloud AI.
+It distributes one capability across four devices, each doing only what that device can. An **Arduino UNO Q** carries an impulse ultra-wideband (IR-UWB) radar that penetrates interior walls, doors, and floors — sensing into the next room — and passes straight through smoke; it runs on-device AI to confirm a living person from breathing motion and works fully offline. A **mobile device** worn on the firefighter localizes the victim, tracks the firefighter's own path across the building, speaks guidance hands-free into their comms, and shows where every teammate is. A **Snapdragon Copilot+ PC** at the command post fuses every responder and detection into one live building map, predicts where people are likely trapped, and raises a downed-firefighter alarm. **Qualcomm Cloud AI 100** trains the edge models and, from the building's blueprint, simulates collapse and fire spread to predict a heatmap of where people are likely trapped — and coordinates multiple teams when an uplink exists. Each tier keeps working if the one above it loses connectivity — the reality of disaster response, and a direct demonstration of distributed edge-to-cloud AI.
 
 ---
 
 ## 2. The problem
 
-Inside a burning building, a firefighter's best perception tool is the thermal imaging camera — but it is line-of-sight (it cannot see through a closed door, a wall, or a floor) and it reads *heat*, not *life*, so a hot appliance or a just-vacated spot can look like a person. Optical cameras and LiDAR are defeated by smoke. The question that decides everything in a fire is simple: **is there a living person behind this barrier, where exactly, and is there still time** — answered before the firefighter commits to breaching.
+Inside a burning building, a firefighter's best perception tool is the thermal imaging camera — but it is line-of-sight (it cannot see through a wall, a closed door, or a floor) and it reads *heat*, not *life*, so a hot appliance or a just-vacated spot can look like a person. Optical cameras and LiDAR are defeated by smoke entirely. The question that decides everything in a fire is simple: **is there a living person behind this wall, in the next room, where exactly, and is there still time** — answered before the firefighter commits to entering.
 
-Radio frequency answers the two things heat and light cannot: smoke is effectively transparent to radio, UWB penetrates interior walls and doors, and the radar can detect the millimetre chest motion of breathing. Vision-X does not replace the thermal camera — it adds the see-through-the-barrier, is-it-alive sense the camera lacks. Firefighter line-of-duty deaths remain in the dozens per year in major fire services, a large share tied to loss of situational awareness inside structures; the same RF that finds civilians also finds a downed colleague.
+Radio frequency answers the two things heat and light cannot: UWB penetrates interior walls, doors, and floors — so it senses a person in the next room before the firefighter enters — it passes straight through smoke, and the radar can detect the millimetre chest motion of breathing. Vision-X does not replace the thermal camera — it adds the see-through-walls, is-it-alive sense the camera lacks. Firefighter line-of-duty deaths remain in the dozens per year in major fire services, a large share tied to loss of situational awareness inside structures; the same RF that finds civilians also finds a downed colleague.
 
 ---
 
@@ -99,7 +99,7 @@ All sensing peripherals attach to the UNO Q. The real-time sensors are read by t
 
 | Peripheral | Interface | Role / function |
 |------------|-----------|-----------------|
-| IR-UWB radar — Novelda XeThru X4 (X4M200 respiration / X4M300 presence; X4F103 dev kit) | `SPI / USB` | Penetrates smoke, walls, and doors; provides presence, motion, range, and respiration. **Core sensor.** |
+| IR-UWB radar — Novelda XeThru X4 (X4M200 respiration / X4M300 presence; X4F103 dev kit) | `SPI / USB` | Penetrates walls, doors, and floors (and smoke); provides presence, motion, range, and respiration. **Core sensor.** |
 | IMU (6/9-axis accel + gyro, optional magnetometer; foot-mounted variant) | `I²C / Qwiic` | Sweep motion-compensation, victim localization, and firefighter dead-reckoning across the floor plan. |
 | Gas + temperature sensor (CO, °C) | `I²C / Qwiic` | Atmosphere and flashover safety — is the void safe to enter. |
 | USB thermal / IR camera (optional) | `USB-C` | Visible-and-smoke layer fused with the radar; the modality the camera still adds. |
@@ -126,9 +126,9 @@ Within a unit, the node streams compact detections to the phone over **BLE or Wi
 
 ## 8. How it works
 
-### 8.1 — Seeing through smoke and walls
+### 8.1 — Seeing through walls, into the next room
 
-The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through smoke and common non-metallic walls and doors, and the human body reflects it. Echo delay gives distance (range bins); a person is found by the motion in those bins.
+The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through common non-metallic walls, doors, and floors — and through smoke — and the human body reflects it, so a firefighter can sense who is in the next room without entering. Echo delay gives distance (range bins); a person is found by the motion in those bins.
 
 ### 8.2 — Detecting breathing
 
@@ -190,7 +190,7 @@ See [`DATASETS.md`](DATASETS.md) for direct pointers and how each is used.
 
 The 24-hour build delivers one vertical slice: a single UNO Q with one IR-UWB module detecting presence, distance, and breathing through a partition; the phone showing the live cue; the PC showing a fused map with one LLM situation line. The cloud runs as a thin sync stub or a second site on a slide.
 
-> **The demo moment:** a smoke machine, a partition with a closed door, and a hidden person. The "firefighter" advances with an obscured visor, pauses at the door, and — before breaching — gets the hands-free cue *"living person detected, ~2 m, behind this door, breathing,"* while the command-post screen lights up the contact on its map. The detect-then-confirm flow (walk up, pause, sweep) is the real intended workflow, and a genuinely smoke-immune radar makes the demo authentic rather than simulated.
+> **The demo moment:** a person hidden in the next room, behind a solid wall. The "firefighter" — in the adjoining room with an obscured visor — pauses at the wall, and before entering gets the hands-free cue *"living person detected, ~2 m, behind this wall, breathing,"* while the command-post screen lights up the contact on its map. Fill the room with smoke and nothing changes. The detect-then-confirm flow (walk up, pause, sweep) is the real intended workflow, and genuinely sensing a living person through a solid wall — no line of sight — makes the demo authentic rather than simulated.
 
 A step-by-step runbook is in [`DEMO.md`](DEMO.md).
 
@@ -208,7 +208,7 @@ A step-by-step runbook is in [`DEMO.md`](DEMO.md).
 
 ## 13. Novelty
 
-The physics is proven (through-wall UWB vital-sign detection), the AI is proven (RF-based pose and localization), and individual pieces of the firefighter stack already exist — SmokeNav (mmWave + IMU for responder navigation), C-THRU (a thermal see-through-smoke HUD), and POINTER (responder tracking). But none of them fuse **(1)** commodity RF that confirms a *living* victim through smoke and walls, **(2)** the detection AI running *on the sensor node itself*, **(3)** a hands-free responder unit that localizes the victim, and **(4)** a command-level coordination and occupancy-prediction layer — as one distributed multi-device system on Snapdragon silicon. That integration is the contribution, and it is low-risk precisely because every ingredient is independently validated.
+The physics is proven (through-wall UWB vital-sign detection), the AI is proven (RF-based pose and localization), and individual pieces of the firefighter stack already exist — SmokeNav (mmWave + IMU for responder navigation), C-THRU (a thermal see-through-smoke HUD), and POINTER (responder tracking). But none of them fuse **(1)** commodity RF that confirms a *living* victim through walls and across rooms (and through smoke), **(2)** the detection AI running *on the sensor node itself*, **(3)** a hands-free responder unit that localizes the victim, and **(4)** a command-level coordination and occupancy-prediction layer — as one distributed multi-device system on Snapdragon silicon. That integration is the contribution, and it is low-risk precisely because every ingredient is independently validated.
 
 ---
 

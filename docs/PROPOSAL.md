@@ -6,15 +6,15 @@ This file holds the **condensed pitch** for the Phase 1 submission portal. The f
 
 ## One-liner
 
-> **Vision-X** — multi-device AI that finds living people through walls and smoke for firefighters, confirming they're alive from the millimetre motion of breathing, with on-device intelligence that keeps working even when the network doesn't.
+> **Vision-X** — multi-device AI that finds living people through walls, across rooms, and smoke for firefighters and rescue teams, confirming they're alive from the millimetre motion of breathing, with on-device intelligence that keeps working even when the network doesn't.
 
 ---
 
 ## ~500-word description *(portal-ready)*
 
-**Vision-X is a multi-device AI system that helps firefighters and rescue teams locate living people through smoke, interior walls, and darkness — and confirm they are alive — before breaching a door.**
+**Vision-X is a multi-device AI system that helps firefighters and rescue teams locate living people through walls, across rooms, and smoke — and confirm they are alive — before entering.**
 
-Inside a burning building, the thermal camera is line-of-sight and reads heat, not life: it cannot see through a closed door, and a hot appliance looks like a person. The decisive question — *is there a living person behind this barrier, where, and is there still time?* — goes unanswered exactly when it matters. Radio frequency answers what heat and light cannot: smoke is transparent to radio, ultra-wideband (UWB) penetrates walls and doors, and radar can detect the millimetre chest motion of breathing. Vision-X adds the see-through-the-barrier, is-it-alive sense the camera lacks.
+Inside a burning building, the thermal camera is line-of-sight and reads heat, not life: it cannot see through a wall or a closed door, and a hot appliance looks like a person. The decisive question — *is there a living person behind this wall, in the next room, and is there still time?* — goes unanswered exactly when it matters. Radio frequency answers what heat and light cannot: ultra-wideband (UWB) penetrates walls, doors, and floors — sensing a person in the next room before the firefighter enters — passes straight through smoke, and radar can detect the millimetre chest motion of breathing. Vision-X adds the see-through-walls, is-it-alive sense the camera lacks.
 
 The system distributes **one capability across four devices**, governed by a single principle: *push every decision to the lowest device that can make it, and ensure each tier keeps working if the one above it disappears.*
 

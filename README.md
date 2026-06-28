@@ -2,7 +2,7 @@
 
 # 🔥 Vision-X
 
-### Finding living people through smoke, walls, and darkness — and giving rescue teams a hands-free sense in zero visibility.
+### Finding living people through walls, across rooms, and smoke — and giving rescue teams a hands-free sense in zero visibility.
 
 [![Hackathon](https://img.shields.io/badge/Snapdragon_Multiverse-Bengaluru_2026-d6520e?style=for-the-badge)](https://github.com/HoneyBadger-010/Vision-X-Through-Wall)
 [![Platform](https://img.shields.io/badge/Platform-Snapdragon-3253dc?style=for-the-badge&logo=qualcomm&logoColor=white)](https://www.qualcomm.com/)
@@ -16,10 +16,10 @@
 ---
 
 > **The question that decides everything inside a fire:**
-> *Is there a living person behind this barrier, where exactly, and is there still time —*
-> *answered **before** the firefighter commits to breaching the door.*
+> *Is there a living person behind this wall — in the next room — where exactly, and is there still time —*
+> *answered **before** the firefighter commits to entering.*
 
-Vision-X is a four-device AI system that helps firefighters and rescue teams locate living people through smoke, interior walls, and darkness — and **confirm they are alive** — using impulse ultra-wideband (IR-UWB) radar, distributed intelligence, and hands-free spoken guidance. It does not replace the thermal camera; it adds the **see-through-the-barrier, is-it-alive** sense the camera lacks.
+Vision-X is a four-device AI system that helps firefighters and rescue teams locate living people **through walls, across rooms, and smoke** — and **confirm they are alive** — using impulse ultra-wideband (IR-UWB) radar, distributed intelligence, and hands-free spoken guidance. It does not replace the thermal camera; it adds the **see-through-walls, is-it-alive** sense the camera lacks.
 
 ---
 
@@ -50,10 +50,10 @@ Vision-X is a four-device AI system that helps firefighters and rescue teams loc
 
 | | |
 |---|---|
-| **What** | A see-through-walls "is-it-alive" sense for firefighters, distributed across four Snapdragon-class devices. |
-| **How** | IR-UWB radar passes through smoke and walls; on-device AI confirms a living person from the millimetre motion of breathing. |
+| **What** | A see-through-walls, across-rooms "is-it-alive" sense for firefighters, distributed across four Snapdragon-class devices. |
+| **How** | IR-UWB radar passes through walls and doors into the next room — and through smoke; on-device AI confirms a living person from the millimetre motion of breathing. |
 | **Why multi-device** | One capability is split so each device does **only what that device can** — and **every tier keeps working if the one above it loses connectivity**. |
-| **The demo** | Smoke machine, a closed door, a hidden person → the firefighter pauses at the threshold and hears *"living person, ~2 m, behind this door, breathing"* before breaching. |
+| **The demo** | A hidden person in the next room → the firefighter, on the other side of a solid wall, pauses and hears *"living person, ~2 m, behind this wall, breathing"* before entering — and it still works with the room full of smoke. |
 | **Why it's low-risk** | Every ingredient (through-wall UWB vitals, RF localization, on-device AI) is independently proven. **The integration is the contribution.** |
 
 ---
@@ -65,9 +65,9 @@ Inside a burning building, a firefighter's best perception tool is the **thermal
 - **It is line-of-sight.** It cannot see through a closed door, a wall, or a floor.
 - **It reads _heat_, not _life_.** A hot appliance or a just-vacated spot looks like a person; a person behind a barrier looks like nothing.
 
-Optical cameras and LiDAR are defeated by smoke entirely. So the decisive question — *is there a living person behind this barrier?* — goes unanswered at the exact moment it matters most.
+So the decisive question — *is there a living person behind this wall, in the next room?* — goes unanswered at the exact moment it matters most. (Optical cameras and LiDAR don't even get that far: smoke defeats them entirely.)
 
-**Radio frequency answers what heat and light cannot.** Smoke is effectively transparent to radio, UWB penetrates interior walls and doors, and radar can detect the **millimetre chest motion of breathing**. The same RF that finds trapped civilians also finds a **downed colleague** — and loss of situational awareness inside structures is tied to a large share of the dozens of firefighter line-of-duty deaths each year.
+**Radio frequency answers what heat and light cannot.** UWB **penetrates interior walls, doors, and floors** — so a firefighter can sense a living person in the *next room* before entering — it passes straight through smoke, and radar can detect the **millimetre chest motion of breathing**. The same RF that finds trapped civilians also finds a **downed colleague** — and loss of situational awareness inside structures is tied to a large share of the dozens of firefighter line-of-duty deaths each year.
 
 ---
 
@@ -94,7 +94,7 @@ Four tiers, from the physical world up to the cloud. Each arrow carries a **more
 
 ```mermaid
 flowchart TB
-    P["🧍 Person behind wall / smoke<br/><i>the subject being sensed</i>"]
+    P["🧍 Person behind wall · in the next room<br/><i>the subject being sensed</i>"]
     N["📟 <b>Arduino UNO Q</b> — Edge Node<br/>Sense + confirm alive · <b>OFFLINE</b>"]
     M["📱 <b>Firefighter's Phone</b><br/>Localize · track · speak guidance"]
     PC["💻 <b>Copilot+ PC (X2 Elite)</b> — Command Post<br/>Fuse map · prioritize · alert"]
@@ -138,8 +138,8 @@ Full role write-ups: [`node/`](node/) · [`mobile/`](mobile/) · [`pc/`](pc/) ·
 
 ## ⚙️ How it works
 
-### 1. Seeing through smoke and walls
-The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through smoke and common non-metallic walls and doors, and the human body reflects it. Echo delay gives distance (range bins); a person is found by the **motion** in those bins.
+### 1. Seeing through walls, into the next room
+The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through common non-metallic **walls, doors, and floors** — and through smoke — and the human body reflects it, so a firefighter can sense who is in the *next room* without entering. Echo delay gives distance (range bins); a person is found by the **motion** in those bins.
 
 ### 2. Detecting breathing — the "is it alive" signal
 The radar sweeps rapidly and repeatedly. The chest wall moves a few millimetres with each breath, so the chest's echo **oscillates between sweeps** at the breathing rate (≈0.2–0.5 Hz, i.e. 12–30 breaths/min). A frequency analysis shows a clear peak at the breathing rate. **Static objects produce no such oscillation** — that is how Vision-X tells a person from a hot radiator. Heartbeat is the same idea, smaller and faster (≈0.8–2 Hz), and is a stretch goal.
@@ -230,9 +230,9 @@ Vision-X-Through-Wall/
 
 The 24-hour build delivers **one vertical slice**: a single UNO Q with one IR-UWB module detecting presence, distance, and breathing **through a partition**; the phone showing the live cue; the PC showing a fused map with one LLM situation line. The cloud runs as a thin sync stub or a second site on a slide.
 
-> **🔥 The demo moment:** a smoke machine, a partition with a closed door, and a hidden person. The "firefighter" advances with an obscured visor, **pauses at the door**, and — before breaching — gets the hands-free cue *"living person detected, ~2 m, behind this door, breathing,"* while the command-post screen lights up the contact on its map.
+> **🔥 The demo moment:** a person hidden in the **next room**, behind a solid wall. The "firefighter" — in the adjoining room, visor obscured — **pauses at the wall**, and *before entering* gets the hands-free cue *"living person detected, ~2 m, behind this wall, breathing,"* while the command-post screen lights up the contact on its map. Fill the room with smoke and nothing changes — RF doesn't care.
 
-The **detect-then-confirm** flow (walk up, pause, sweep) is the real intended workflow, and a genuinely smoke-immune radar makes the demo **authentic rather than simulated**. Full runbook → [`docs/DEMO.md`](docs/DEMO.md).
+The **detect-then-confirm** flow (walk up, pause, sweep) is the real intended workflow, and genuinely **sensing a living person through a solid wall** — no line of sight, no trick — makes the demo **authentic rather than simulated**. Full runbook → [`docs/DEMO.md`](docs/DEMO.md).
 
 ---
 
@@ -265,7 +265,7 @@ Details and licensing → [`docs/DATASETS.md`](docs/DATASETS.md).
 
 The physics is proven (through-wall UWB vital-sign detection), the AI is proven (RF-based pose and localization), and individual pieces of the firefighter stack already exist — **SmokeNav** (mmWave + IMU navigation), **C-THRU** (a thermal see-through-smoke HUD), and **POINTER** (responder tracking). But none of them fuse, as one distributed multi-device system on Snapdragon silicon:
 
-1. commodity **RF that confirms a _living_ victim** through smoke and walls,
+1. commodity **RF that confirms a _living_ victim** through walls and across rooms (and through smoke),
 2. the **detection AI running on the sensor node itself**,
 3. a **hands-free responder unit** that localizes the victim, and
 4. a **command-level coordination + occupancy-prediction** layer.
