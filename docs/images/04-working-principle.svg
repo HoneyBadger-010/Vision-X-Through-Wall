@@ -35,4 +35,4 @@
         <text class="th" x="600" y="96" text-anchor="middle" dominant-baseline="central">what the radar sees</text>
         <path d="M524 140 Q546 114 568 140 Q590 166 612 140 Q634 114 656 140 Q668 128 676 134" fill="none" stroke="#0f7a5f" stroke-width="2"/>
         <text class="th" x="600" y="196" text-anchor="middle" dominant-baseline="central">≈ 14 breaths / min</text>
-      </svg>
+      <!-- vision-x figure --></svg>
