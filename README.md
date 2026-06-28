@@ -16,6 +16,12 @@
 
 </div>
 
+<div align="center">
+  <img src="docs/images/demo-scene.png" alt="Vision-X demo scene — top-down: a firefighter in one room detects a breathing victim in the next room through a solid wall; the command center shows the live alert" width="880">
+  <br>
+  <sub><b>Vision-X in action (top-down view).</b> A firefighter in Room A detects a person collapsed in Room B <i>through the dividing wall</i>: UWB pulses pass through, the system finds breathing (~0.25 Hz) and range (~2 m), the phone speaks the cue, and the Command Center flags <b>"LIVING PERSON DETECTED — ALIVE."</b> The device chain (Arduino UNO Q → phone → Snapdragon PC → Cloud AI 100) runs along the bottom.</sub>
+</div>
+
 ---
 
 > **The question that decides everything inside a fire:**
@@ -91,6 +97,12 @@ That single design rule produces the entire architecture *and* its strongest arg
 
 Disaster zones force exactly this property — and it happens to be the precise **distributed edge-to-cloud AI** story this hardware is built for. **Every device is non-substitutable because of *where the intelligence has to live*, not because it was added for effect.**
 
+<div align="center">
+  <img src="docs/images/data-abstraction-pyramid.png" alt="Vision-X data-abstraction pyramid: raw RF echo at the bottom rising through detection, position, building map, to prediction at the top" width="640">
+  <br>
+  <sub><b>The core principle, visualized.</b> Bottom to top: raw RF echo → vital-sign detection → 3D position → live building map → trapped-occupant prediction. <b>Data shrinks</b> as it climbs (less, more abstract) while <b>intelligence grows</b> — each level handled by the lowest device that can do it: UNO Q → phone → AI PC → Cloud AI 100.</sub>
+</div>
+
 ---
 
 ## 🏗 System architecture
@@ -126,6 +138,14 @@ flowchart TB
   <img src="docs/images/01-architecture.svg" alt="Vision-X four-tier architecture" width="560">
 </div>
 
+### Graceful degradation — the multi-device payoff
+
+<div align="center">
+  <img src="docs/images/graceful-degradation.png" alt="Vision-X graceful-degradation matrix showing which tiers stay alive when each link or device is lost" width="820">
+  <br>
+  <sub><b>What survives when links or devices are lost.</b> Cloud lost → PC, phone, node still run (uses last heatmap); command post lost → each phone still guides its own firefighter; lone firefighter → still gets victim detection + voice guidance; a phone fails → its node still raises a standalone alert and the PC keeps the other units. Green = fully operational, amber = degraded, red = offline.</sub>
+</div>
+
 ---
 
 ## 🧩 The four devices
@@ -139,6 +159,12 @@ flowchart TB
 
 Full role write-ups: [`node/`](node/) · [`mobile/`](mobile/) · [`pc/`](pc/) · [`cloud/`](cloud/)
 
+<div align="center">
+  <img src="docs/images/device-responsibility-split.png" alt="Vision-X device responsibility split: four tiers each with a contract — SENSE, LOCALIZE, FUSE, PREDICT" width="900">
+  <br>
+  <sub><b>One job per device — remove one and the system degrades, not breaks.</b> UNO Q = <b>SENSE</b> (raw RF → compact detection), phone = <b>LOCALIZE</b> (position + voice guidance), AI PC = <b>FUSE</b> (one live team picture), Cloud AI 100 = <b>PREDICT</b> (learn + forecast where people are trapped). Each box lists that device's exact inputs and outputs.</sub>
+</div>
+
 ---
 
 ## ⚙️ How it works
@@ -146,11 +172,23 @@ Full role write-ups: [`node/`](node/) · [`mobile/`](mobile/) · [`pc/`](pc/) ·
 ### 1. Seeing through walls, into the next room
 The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through common non-metallic **walls, doors, and floors** — and through smoke — and the human body reflects it, so a firefighter can sense who is in the *next room* without entering. Echo delay gives distance (range bins); a person is found by the **motion** in those bins.
 
+<div align="center">
+  <img src="docs/images/radar-range-measurement.png" alt="Radar range measurement: a pulse is emitted through a wall, the echo returns, and the time delay gives distance; the range is split into bins" width="640">
+  <br>
+  <sub><b>How distance is measured.</b> A UWB pulse passes through the wall to the target and the echo returns; the round-trip time Δt gives range via <b>R = c·Δt/2</b>. The time window is sliced into <b>range bins</b>, each a fixed distance — the person is the bin whose echo moves over time.</sub>
+</div>
+
 ### 2. Detecting breathing — the "is it alive" signal
 The radar sweeps rapidly and repeatedly. The chest wall moves a few millimetres with each breath, so the chest's echo **oscillates between sweeps** at the breathing rate (≈0.2–0.5 Hz, i.e. 12–30 breaths/min). A frequency analysis shows a clear peak at the breathing rate. **Static objects produce no such oscillation** — that is how Vision-X tells a person from a hot radiator. Heartbeat is the same idea, smaller and faster (≈0.8–2 Hz), and is a stretch goal.
 
 <div align="center">
   <img src="docs/images/04-working-principle.svg" alt="Working principle: UWB pulses pass through a barrier, reflect off a breathing chest, and become a breathing waveform" width="620">
+</div>
+
+<div align="center">
+  <img src="docs/images/breathing-fft-spectrum.png" alt="Breathing to FFT spectrum: a living person's periodic chest motion produces a sharp peak at ~0.25 Hz; a static object produces a flat spectrum with no peak" width="720">
+  <br>
+  <sub><b>The "is it alive" signal, in the frequency domain.</b> A living person's chest motion is periodic, so its FFT shows a sharp peak at ~0.25 Hz (12–18 breaths/min). A static object — a hot appliance, furniture — has no periodic motion and a flat spectrum. <b>The presence of that peak is what separates a person from a warm object.</b></sub>
 </div>
 
 ### 3. The motion problem → **detect-then-confirm**
@@ -160,6 +198,12 @@ The hardest issue: on a *moving* firefighter, the firefighter's own body motion 
 - The firefighter **stops at the threshold** for a few seconds; **only during that still dwell is breathing confirmed.**
 - Residual sway is removed by **IMU motion compensation** — the accelerometer/gyro measures the sensor's own motion and subtracts it from the radar track (the same approach airborne rescue radar uses for platform drift).
 - A **CNN trained on motion-inclusive, IMU-synchronized data** learns the cancellation instead of hand-tuned filters.
+
+<div align="center">
+  <img src="docs/images/body-sway-vs-breathing.png" alt="Body sway (centimetres) vs breathing (millimetres) on the same scale, showing sway is 10-50x larger, with the detect, compensate, reveal, confirm workflow" width="820">
+  <br>
+  <sub><b>Why detect-then-confirm is necessary.</b> On the same scale, a moving firefighter's body sway (≈5–6 cm) is <b>10–50× larger</b> than breathing chest motion (≈2–5 mm) and buries it. The fix: detect any motion → use the IMU to cancel the large body sway → reveal the tiny breathing → confirm it with the FFT peak.</sub>
+</div>
 
 ### 4. Localizing the victim
 One reading gives range, not a position. As the firefighter sweeps from slightly different spots, the phone fuses successive ranges with its IMU to triangulate: *"living person, ~2 m, behind this wall, low to the floor."*
@@ -179,6 +223,21 @@ raw RF echo (node, real-time)
 ```
 Two flows run **back down**: the cloud's occupancy heatmap → the PC, and the PC's fused team positions → every phone. Awareness that needs the whole picture is computed **once, centrally**, and distributed.
 
+<div align="center">
+  <img src="docs/images/full-process-flow.png" alt="Vision-X end-to-end process flow across four swimlanes: Arduino UNO Q, mobile device, Copilot+ PC, and Cloud AI 100" width="900">
+  <br>
+  <sub><b>End-to-end process flow.</b> Four swimlanes — UNO Q (sense + confirm alive, offline), mobile (localize + track + speak), Copilot+ PC (fuse + map + prioritize), Cloud AI 100 (train + simulate + heatmap) — traced from the radar pulse all the way to "Save Lives," with data abstraction growing upward (Edge → Cloud).</sub>
+</div>
+
+### 7. From collapse to search priority — the cloud's contribution
+When a backhaul exists, the cloud turns the building blueprint and live detections into a **search plan**: it reconstructs the collapsed structure from radar + IMU data, builds a 3D **occupancy heatmap** of where people are most likely present, and ranks rooms by **search priority** so teams hit the highest-probability zones first. It stays non-blocking — if the uplink drops, the last computed heatmap is used.
+
+<div align="center">
+  <img src="docs/images/collapse-to-search-priority.png" alt="Vision-X cloud pipeline: building collapse to 3D reconstruction to occupancy heatmap to search-priority map" width="900">
+  <br>
+  <sub><b>The cloud's job — turn rubble into a search plan.</b> Collapse → 3D reconstruction (from radar + IMU) → <b>occupancy heatmap</b> (probability of people, layer by layer) → <b>search-priority map</b> (red = search first, green = last). The same data-shrinks / intelligence-grows principle, applied to disaster response.</sub>
+</div>
+
 ---
 
 ## 🧠 AI / ML pipeline & toolchain
@@ -189,6 +248,12 @@ Two flows run **back down**: the cloud's occupancy heatmap → the PC, and the P
 | **Phone** | small **on-device LLM** (e.g. Llama 3.2 3B) for offline spoken guidance, speech in/out | Qualcomm AI Hub → QNN / Genie on the NPU (ONNX is the NPU path on Snapdragon, **not** GGUF) |
 | **PC** | sensor-fusion + occupancy prediction, larger **on-device LLM** with retrieval grounded in the floor plan | AnythingLLM on the Hexagon NPU (~45 TOPS), all private / offline-capable |
 | **Cloud** | heavier occupancy-likelihood model; *(future)* retraining the edge detector from aggregated data | Qualcomm Cloud AI 100 |
+
+<div align="center">
+  <img src="docs/images/ai-ml-pipeline.png" alt="Vision-X AI/ML pipeline: raw radar echo, clutter removal, range FFT, micro-Doppler extraction, CNN inference, detection JSON output" width="900">
+  <br>
+  <sub><b>On-device AI pipeline (runs on the UNO Q).</b> Raw IR-UWB echo → clutter removal (drop static walls/objects) → range-FFT (time delay → distance) → micro-Doppler extraction (breathing / subtle-motion signatures) → <b>CNN</b> (human vs non-human + vitals) → compact <b>detection JSON</b> (<code>human, distance, breathing_rate, confidence, status</code>).</sub>
+</div>
 
 **Toolchain:** Qualcomm AI Hub + `qai_hub_models` (supports Snapdragon X Elite **and X2 Elite** — the award hardware), QNN / QAIRT, the Genie LLM runtime, ONNX Runtime, Edge Impulse, TensorFlow Lite, and Arduino App Lab.
 
@@ -218,7 +283,7 @@ Vision-X-Through-Wall/
 │   ├── DATASETS.md           ← public datasets + how we use them
 │   ├── ROADMAP.md            ← milestones & future scope
 │   ├── PROPOSAL.md           ← condensed pitch (for the submission portal)
-│   ├── images/               ← architecture / circuit / network / principle SVGs
+│   ├── images/               ← all diagrams & figures (SVG + PNG: architecture, pipeline, demo scene …)
 │   └── Vision-X_design_document.html   ← original print-friendly design doc
 ├── node/                     ← Arduino UNO Q — edge sensor node (firmware + on-device AI)
 ├── mobile/                   ← firefighter phone app (localization, tracking, guidance LLM)
@@ -233,11 +298,13 @@ Vision-X-Through-Wall/
 
 ## 🎬 Demonstration plan
 
-The 24-hour build delivers **one vertical slice**: a single UNO Q with one IR-UWB module detecting presence, distance, and breathing **through a partition**; the phone showing the live cue; the PC showing a fused map with one LLM situation line. The cloud runs as a thin sync stub or a second site on a slide.
+The 24-hour build delivers **one vertical slice**: a single UNO Q with one IR-UWB module detecting presence, distance, and breathing **through a solid wall**; the phone showing the live cue; the PC showing a fused map with one LLM situation line. The cloud runs as a thin sync stub or a second site on a slide.
 
 > **🔥 The demo moment:** a person hidden in the **next room**, behind a solid wall. The "firefighter" — in the adjoining room, visor obscured — **pauses at the wall**, and *before entering* gets the hands-free cue *"living person detected, ~2 m, behind this wall, breathing,"* while the command-post screen lights up the contact on its map. Fill the room with smoke and nothing changes — RF doesn't care.
 
 The **detect-then-confirm** flow (walk up, pause, sweep) is the real intended workflow, and genuinely **sensing a living person through a solid wall** — no line of sight, no trick — makes the demo **authentic rather than simulated**. Full runbook → [`docs/DEMO.md`](docs/DEMO.md).
+
+> 🖼 The illustration at the [top of this README](#-vision-x) shows this exact moment, end to end.
 
 ---
 
@@ -276,6 +343,12 @@ The physics is proven (through-wall UWB vital-sign detection), the AI is proven 
 4. a **command-level coordination + occupancy-prediction** layer.
 
 **That integration is the contribution — and it is low-risk precisely because every ingredient is independently validated.**
+
+<div align="center">
+  <img src="docs/images/rf-pose-3d-mesh.png" alt="RF-Pose research: 3D human body meshes reconstructed purely from radio signals, shown beside the camera scene they were inferred from" width="720">
+  <br>
+  <sub><b>Prior art that de-risks us — and our future direction.</b> RF-Pose research (Zhao et al., MIT CSAIL) reconstructs full 3D human meshes from radio reflections alone, proving RF carries rich pose information. Vision-X ships with presence + breathing first; <b>3D posture (slumped vs. moving) is the roadmap extension</b>. <i>Illustration of the published research direction — not a Vision-X output.</i></sub>
+</div>
 
 ---
 

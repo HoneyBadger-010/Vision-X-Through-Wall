@@ -61,3 +61,11 @@ Thumbs.db
 
 # ---- Agent / local tooling ----
 .claude/
+
+# Local image backups / drafts
+_image_drafts/
+
+# Local working / form-filling docs (kept local, not committed)
+/DIAGRAMS.txt
+/device_list.txt
+/phase1_description.txt
