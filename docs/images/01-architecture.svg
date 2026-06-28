@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 530" role="img" aria-label="Four-tier architecture: a person behind a wall is sensed by an Arduino UNO Q node, with detections rising through a phone and a Snapdragon PC to an opportunistic cloud tier."><style>text{font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif}.t{font-size:14px;fill:#15181d}.ts{font-size:12px;fill:#5b6470}.th{font-size:14px;font-weight:600;fill:#15181d}</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#5b6470" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- cloud -->
+        <rect x="230" y="30" width="260" height="56" rx="10" fill="#f1f3f6" stroke="#8a94a0" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="th" x="360" y="52" text-anchor="middle" dominant-baseline="central">Qualcomm Cloud AI 100</text>
+        <text class="ts" x="360" y="70" text-anchor="middle" dominant-baseline="central">Train · simulate · heatmap</text>
+        <line x1="360" y1="130" x2="360" y2="90" stroke="#5b6470" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="110" text-anchor="start" dominant-baseline="central">summary</text>
+        <!-- PC -->
+        <rect x="230" y="130" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="152" text-anchor="middle" dominant-baseline="central">Copilot+ PC · X2 Elite</text>
+        <text class="ts" x="360" y="170" text-anchor="middle" dominant-baseline="central">Fuse map · prioritize · alert</text>
+        <line x1="360" y1="230" x2="360" y2="190" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="210" text-anchor="start" dominant-baseline="central">position + track</text>
+        <!-- phone -->
+        <rect x="230" y="230" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="252" text-anchor="middle" dominant-baseline="central">Firefighter's phone</text>
+        <text class="ts" x="360" y="270" text-anchor="middle" dominant-baseline="central">Localize · track · speak guidance</text>
+        <line x1="360" y1="330" x2="360" y2="290" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="310" text-anchor="start" dominant-baseline="central">detection</text>
+        <!-- node -->
+        <rect x="230" y="330" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="352" text-anchor="middle" dominant-baseline="central">Arduino UNO Q</text>
+        <text class="ts" x="360" y="370" text-anchor="middle" dominant-baseline="central">Sense + confirm alive · offline</text>
+        <line x1="360" y1="430" x2="360" y2="390" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="410" text-anchor="start" dominant-baseline="central">RF echo</text>
+        <!-- person -->
+        <rect x="230" y="430" width="260" height="56" rx="10" fill="#ffffff" stroke="#c9d0d8" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="th" x="360" y="452" text-anchor="middle" dominant-baseline="central">Person behind wall / smoke</text>
+        <text class="ts" x="360" y="470" text-anchor="middle" dominant-baseline="central">the subject being sensed</text>
+        <!-- legend -->
+        <rect x="230" y="500" width="16" height="12" rx="3" fill="#e3f3ee" stroke="#0f7a5f"/>
+        <text class="ts" x="252" y="506" text-anchor="start" dominant-baseline="central">On-device AI · works offline</text>
+        <rect x="430" y="500" width="16" height="12" rx="3" fill="#f1f3f6" stroke="#8a94a0" stroke-dasharray="4 3"/>
+        <text class="ts" x="452" y="506" text-anchor="start" dominant-baseline="central">Cloud · opportunistic uplink</text>
+      </svg>

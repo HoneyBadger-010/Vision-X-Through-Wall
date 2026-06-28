@@ -1,0 +1,425 @@
+<!-- Vision-X — full design document. Self-contained, print-friendly. -->
+<meta charset="utf-8">
+<title>Vision-X — Design Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15181d; --slate:#5b6470; --faint:#8a94a0; --hair:#d8dee5; --paper:#ffffff; --soft:#f5f7f9;
+    --ember:#d6520e; --ember-soft:#fbe9df; --teal:#0f7a5f; --teal-soft:#e3f3ee; --steel:#2f6db0; --steel-soft:#e9f0fb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--soft);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;line-height:1.7;font-size:16px}
+  .wrap{max-width:880px;margin:0 auto;background:var(--paper);
+    padding:64px 60px 80px;border-left:1px solid var(--hair);border-right:1px solid var(--hair)}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:42px;line-height:1.08;margin:0 0 10px;letter-spacing:-0.02em}
+  h2{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:24px;margin:54px 0 14px;letter-spacing:-0.01em;
+    padding-top:18px;border-top:2px solid var(--ink)}
+  h2 .sx{font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--ember);font-weight:500;margin-right:10px;vertical-align:2px}
+  h3{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:17px;margin:28px 0 6px}
+  p{margin:0 0 14px}
+  a{color:var(--steel)}
+  .kicker{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ember);margin:0 0 14px}
+  .tag{font-family:"Space Grotesk",sans-serif;font-size:19px;color:var(--slate);font-weight:500;margin:0 0 22px;line-height:1.4}
+  .meta{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--faint);border-top:1px solid var(--hair);
+    border-bottom:1px solid var(--hair);padding:12px 0;margin:0 0 4px;display:flex;flex-wrap:wrap;gap:6px 22px}
+  .lead{font-size:18px;color:var(--ink)}
+  strong{font-weight:600}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--soft);border:1px solid var(--hair);
+    border-radius:4px;padding:1px 5px;color:var(--ink)}
+  ul,ol{margin:0 0 14px;padding-left:22px}
+  li{margin:6px 0}
+  .toc{background:var(--soft);border:1px solid var(--hair);border-radius:12px;padding:18px 24px;margin:28px 0 8px}
+  .toc h4{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin:0 0 8px}
+  .toc ol{columns:2;column-gap:36px;padding-left:18px;margin:0}
+  .toc a{color:var(--ink);text-decoration:none}
+  .toc a:hover{color:var(--ember)}
+  figure{margin:26px 0;padding:0}
+  .fig{background:var(--paper);border:1px solid var(--hair);border-radius:12px;padding:22px 22px 8px}
+  figcaption{font-size:13.5px;color:var(--slate);margin-top:10px;padding-left:2px}
+  figcaption b{font-family:"IBM Plex Mono",monospace;color:var(--ember);font-weight:500;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+  .fig svg{width:100%;height:auto;display:block}
+  .fig text{font-family:"IBM Plex Sans",sans-serif}
+  .fig .t{font-size:14px;fill:var(--ink)}
+  .fig .ts{font-size:12px;fill:var(--slate)}
+  .fig .th{font-size:14px;font-weight:600;fill:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);border-bottom:2px solid var(--ink)}
+  td code{white-space:nowrap}
+  .note{border-left:3px solid var(--ember);background:var(--ember-soft);padding:12px 16px;border-radius:0 8px 8px 0;margin:18px 0;font-size:15px}
+  .refs{font-size:14px;counter-reset:r}
+  .refs li{margin:9px 0;line-height:1.55}
+  .refs .v{color:var(--slate)}
+  hr{border:0;border-top:1px solid var(--hair);margin:40px 0}
+  @media (max-width:720px){
+    .wrap{padding:40px 22px 56px} h1{font-size:32px} .toc ol{columns:1}
+  }
+  @media print{
+    body{background:#fff;font-size:11.5pt}
+    .wrap{max-width:none;border:0;padding:0}
+    h2{break-after:avoid} figure,table,.note{break-inside:avoid}
+    a{color:var(--ink);text-decoration:none}
+  }
+</style>
+
+<div class="wrap">
+
+  <p class="kicker">Multi-device AI · Project design document</p>
+  <h1>Vision-X</h1>
+  <p class="tag">Finding living people through smoke, walls, and darkness — and giving rescue teams a hands-free sense in zero visibility.</p>
+  <div class="meta">
+    <span>Snapdragon Multiverse Hackathon · Bengaluru</span>
+    <span>Phase&nbsp;1 — Project submission</span>
+    <span>Devices: AI&nbsp;PC · Mobile · Arduino&nbsp;UNO&nbsp;Q · Cloud&nbsp;AI&nbsp;100</span>
+  </div>
+
+  <div class="toc">
+    <h4>Contents</h4>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#problem">The problem</a></li>
+      <li><a href="#solution">Solution &amp; core principle</a></li>
+      <li><a href="#arch">System architecture</a></li>
+      <li><a href="#roles">Device roles</a></li>
+      <li><a href="#periph">Peripherals &amp; circuit</a></li>
+      <li><a href="#net">Connection network</a></li>
+      <li><a href="#working">How it works</a></li>
+      <li><a href="#ai">AI / ML pipeline &amp; toolchain</a></li>
+      <li><a href="#data">Datasets</a></li>
+      <li><a href="#demo">Demonstration plan</a></li>
+      <li><a href="#challenges">Feasibility &amp; challenges</a></li>
+      <li><a href="#novelty">Novelty</a></li>
+      <li><a href="#future">Future scope</a></li>
+      <li><a href="#refs">References</a></li>
+    </ol>
+  </div>
+
+  <h2 id="abstract"><span class="sx">§01</span>Abstract</h2>
+  <p class="lead">Vision-X is a multi-device AI system that helps firefighters and rescue teams locate living people through smoke, interior walls, and darkness, and confirm they are alive — before breaching a door.</p>
+  <p>It distributes one capability across four devices, each doing only what that device can. An <strong>Arduino UNO&nbsp;Q</strong> carries an impulse ultra-wideband (IR-UWB) radar that penetrates smoke and walls; it runs on-device AI to confirm a living person from breathing motion and works fully offline. A <strong>mobile device</strong> worn on the firefighter localizes the victim, tracks the firefighter's own path across the building, speaks guidance hands-free into their comms, and shows where every teammate is. A <strong>Snapdragon Copilot+ PC</strong> at the command post fuses every responder and detection into one live building map, predicts where people are likely trapped, and raises a downed-firefighter alarm. <strong>Qualcomm Cloud AI&nbsp;100</strong> trains the edge models and, from the building's blueprint, simulates collapse and fire spread to predict a heatmap of where people are likely trapped — and coordinates multiple teams when an uplink exists. Each tier keeps working if the one above it loses connectivity — the reality of disaster response, and a direct demonstration of distributed edge-to-cloud AI.</p>
+
+  <h2 id="problem"><span class="sx">§02</span>The problem</h2>
+  <p>Inside a burning building, a firefighter's best perception tool is the thermal imaging camera — but it is line-of-sight (it cannot see through a closed door, a wall, or a floor) and it reads <em>heat</em>, not <em>life</em>, so a hot appliance or a just-vacated spot can look like a person. Optical cameras and LiDAR are defeated by smoke. The question that decides everything in a fire is simple: <strong>is there a living person behind this barrier, where exactly, and is there still time</strong> — answered before the firefighter commits to breaching.</p>
+  <p>Radio frequency answers the two things heat and light cannot: smoke is effectively transparent to radio, UWB penetrates interior walls and doors, and the radar can detect the millimetre chest motion of breathing. Vision-X does not replace the thermal camera — it adds the see-through-the-barrier, is-it-alive sense the camera lacks. Firefighter line-of-duty deaths remain in the dozens per year in major fire services, a large share tied to loss of situational awareness inside structures; the same RF that finds civilians also finds a downed colleague.</p>
+
+  <h2 id="solution"><span class="sx">§03</span>Solution &amp; core principle</h2>
+  <p>The design rule that produces both the architecture and its strongest argument: <strong>push every decision to the lowest device that can make it, and ensure each tier keeps working if the one above it disappears.</strong> Data shrinks as it climbs the stack — a raw radar echo becomes a detection, then a position, then a building-wide picture — while intelligence grows. The result is <strong>graceful degradation</strong>: the node finds a victim with no network, the phone guides one firefighter with no command post, the PC coordinates a building with no internet, and the cloud links sites only when a backhaul exists. Disaster zones force exactly this property, and it happens to be the precise distributed-edge-AI story the hardware is built for. Every device is non-substitutable because of <em>where the intelligence has to live</em>, not because it was added for effect.</p>
+
+  <h2 id="arch"><span class="sx">§04</span>System architecture</h2>
+  <p>Four tiers, from the physical world up to the cloud. Each arrow carries a more abstract product than the one below it.</p>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 720 530" role="img" aria-label="Four-tier architecture: a person behind a wall is sensed by an Arduino UNO Q node, with detections rising through a phone and a Snapdragon PC to an opportunistic cloud tier.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#5b6470" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- cloud -->
+        <rect x="230" y="30" width="260" height="56" rx="10" fill="#f1f3f6" stroke="#8a94a0" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="th" x="360" y="52" text-anchor="middle" dominant-baseline="central">Qualcomm Cloud AI 100</text>
+        <text class="ts" x="360" y="70" text-anchor="middle" dominant-baseline="central">Train · simulate · heatmap</text>
+        <line x1="360" y1="130" x2="360" y2="90" stroke="#5b6470" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="110" text-anchor="start" dominant-baseline="central">summary</text>
+        <!-- PC -->
+        <rect x="230" y="130" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="152" text-anchor="middle" dominant-baseline="central">Copilot+ PC · X2 Elite</text>
+        <text class="ts" x="360" y="170" text-anchor="middle" dominant-baseline="central">Fuse map · prioritize · alert</text>
+        <line x1="360" y1="230" x2="360" y2="190" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="210" text-anchor="start" dominant-baseline="central">position + track</text>
+        <!-- phone -->
+        <rect x="230" y="230" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="252" text-anchor="middle" dominant-baseline="central">Firefighter's phone</text>
+        <text class="ts" x="360" y="270" text-anchor="middle" dominant-baseline="central">Localize · track · speak guidance</text>
+        <line x1="360" y1="330" x2="360" y2="290" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="310" text-anchor="start" dominant-baseline="central">detection</text>
+        <!-- node -->
+        <rect x="230" y="330" width="260" height="56" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="360" y="352" text-anchor="middle" dominant-baseline="central">Arduino UNO Q</text>
+        <text class="ts" x="360" y="370" text-anchor="middle" dominant-baseline="central">Sense + confirm alive · offline</text>
+        <line x1="360" y1="430" x2="360" y2="390" stroke="#5b6470" stroke-width="1.4" marker-end="url(#ar)"/>
+        <text class="ts" x="378" y="410" text-anchor="start" dominant-baseline="central">RF echo</text>
+        <!-- person -->
+        <rect x="230" y="430" width="260" height="56" rx="10" fill="#ffffff" stroke="#c9d0d8" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="th" x="360" y="452" text-anchor="middle" dominant-baseline="central">Person behind wall / smoke</text>
+        <text class="ts" x="360" y="470" text-anchor="middle" dominant-baseline="central">the subject being sensed</text>
+        <!-- legend -->
+        <rect x="230" y="500" width="16" height="12" rx="3" fill="#e3f3ee" stroke="#0f7a5f"/>
+        <text class="ts" x="252" y="506" text-anchor="start" dominant-baseline="central">On-device AI · works offline</text>
+        <rect x="430" y="500" width="16" height="12" rx="3" fill="#f1f3f6" stroke="#8a94a0" stroke-dasharray="4 3"/>
+        <text class="ts" x="452" y="506" text-anchor="start" dominant-baseline="central">Cloud · opportunistic uplink</text>
+      </svg>
+    </div>
+    <figcaption><b>Figure 1</b> — System architecture. Data abstracts upward; intelligence grows upward; each tier runs even if the tier above it is unreachable.</figcaption>
+  </figure>
+
+  <h2 id="roles"><span class="sx">§05</span>Device roles</h2>
+
+  <h3>5.1 — Arduino UNO Q · the edge sensor node</h3>
+  <p>The UNO&nbsp;Q is a dual-brain board: a Qualcomm Dragonwing QRB2210 microprocessor running full Debian Linux, paired with an STM32U585 real-time microcontroller. In Vision-X it carries the radar and supporting sensors. The <strong>STM32 captures radar frames and sensor data on a hard real-time clock</strong> (timing Linux cannot guarantee), while the <strong>Dragonwing MPU runs the on-device AI</strong> — clutter removal plus a small neural network — and emits a compact detection such as <code>human · 2.8 m · breathing 14/min · conf 0.86</code>. Raw RF never leaves the board. This is what makes the node non-substitutable: it is an autonomous detector that works in a burning structure with no network, not a radio that streams data elsewhere.</p>
+
+  <h3>5.2 — Mobile device · the hands-free mobile brain</h3>
+  <p>Worn on the firefighter's SCBA or chest and paired directly to the node over BLE / Wi-Fi Direct, so firefighter-plus-node is a self-contained unit. It performs real compute: it fuses successive radar sweeps with its own IMU to localize the victim relative to the responder, tracks the firefighter's own position across the building by dead reckoning, and runs a small on-device language model that turns a detection into a spoken cue piped into the comms — because a gloved, masked firefighter in heavy smoke cannot read a screen. The display is the output of that work, not a mirror of the PC. It also receives the fused <strong>team picture from the command post</strong> and shows each teammate's live position relative to the wearer — so firefighters can see one another inside the smoke, coordinate coverage, and move toward a colleague in trouble.</p>
+
+  <h3>5.3 — Copilot+ PC (X2 Elite) · the incident-command brain</h3>
+  <p>The heavyweight tier, running on the Hexagon NPU at the scene — private and internet-free. Where the phone handles one firefighter, the PC fuses <em>every</em> responder and <em>every</em> detection into one live building map — and <strong>pushes that team picture back down to every firefighter's phone</strong>, so each responder sees where their teammates are. It raises a downed-firefighter alarm and runs a larger on-device language model that writes the commander's situation report and answers queries such as "how many alive on the second floor?". Many-to-one fusion plus command reasoning is the job a single moving phone structurally cannot do.</p>
+
+  <h3>5.4 — Qualcomm Cloud AI 100 · heavy analytics, simulation &amp; training</h3>
+  <p>The cloud carries the workloads too heavy for the edge and the work that benefits from building-scale data. <strong>Background / pre-incident:</strong> it trains and continually improves the edge detection models from data aggregated across incidents and pushes them back as OTA updates; and for a registered building it builds a risk model — running structural-failure and fire-spread simulations over the blueprint (building on established simulation methods rather than reinventing them) to estimate how the structure may collapse and where fire travels. <strong>The output is a predicted heatmap over the blueprint:</strong> the likely locations of trapped and buried occupants and the priority zones to search first, weighting occupancy patterns, collapse-prone areas, and fire spread. <strong>During an incident,</strong> when the command vehicle has an uplink, the cloud serves that heatmap and continuously refines it with the live detections rising from the field, and resolves the ambiguous faint signals the edge cannot. It stays <strong>non-blocking</strong>: with no uplink the system uses the last precomputed heatmap plus live detections and loses nothing critical — so the heavy cloud role reinforces, rather than breaks, the offline-first design.</p>
+
+  <h2 id="periph"><span class="sx">§06</span>Peripherals &amp; circuit connections</h2>
+  <p>All sensing peripherals attach to the UNO&nbsp;Q. The real-time sensors are read by the STM32 over its physical interfaces; the Dragonwing MPU handles AI and the wireless link.</p>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 720 430" role="img" aria-label="Edge node wiring: an Arduino UNO Q with a Dragonwing MPU and STM32 MCU, connected to an IMU and gas sensor over I2C, an IR-UWB radar over SPI, an LED indicator over GPIO, a BLE/Wi-Fi link to the phone, and a USB-C battery.">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#8a94a0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- connection lines (drawn first, under boxes) -->
+        <line x1="210" y1="154" x2="278" y2="154" stroke="#8a94a0" stroke-width="1.2"/>
+        <line x1="210" y1="226" x2="278" y2="226" stroke="#8a94a0" stroke-width="1.2"/>
+        <line x1="210" y1="298" x2="278" y2="298" stroke="#8a94a0" stroke-width="1.2"/>
+        <line x1="442" y1="126" x2="498" y2="126" stroke="#8a94a0" stroke-width="1.2"/>
+        <line x1="442" y1="206" x2="498" y2="206" stroke="#8a94a0" stroke-width="1.2"/>
+        <line x1="360" y1="330" x2="360" y2="360" stroke="#8a94a0" stroke-width="1.2"/>
+        <text class="ts" x="244" y="144" text-anchor="middle">I²C</text>
+        <text class="ts" x="244" y="216" text-anchor="middle">SPI</text>
+        <text class="ts" x="244" y="288" text-anchor="middle">I²C</text>
+        <text class="ts" x="470" y="116" text-anchor="middle">GPIO</text>
+        <text class="ts" x="470" y="196" text-anchor="middle">radio</text>
+        <text class="ts" x="392" y="346" text-anchor="start">USB-C</text>
+        <!-- UNO Q outer -->
+        <rect x="280" y="120" width="160" height="210" rx="12" fill="#fbe9df" stroke="#d6520e" stroke-width="1"/>
+        <text class="th" x="360" y="138" text-anchor="middle" dominant-baseline="central">Arduino UNO Q</text>
+        <rect x="292" y="152" width="136" height="68" rx="8" fill="#ffffff" stroke="#d6520e" stroke-width="0.8"/>
+        <text class="th" x="360" y="176" text-anchor="middle" dominant-baseline="central">Dragonwing MPU</text>
+        <text class="ts" x="360" y="194" text-anchor="middle" dominant-baseline="central">Linux + AI (CNN)</text>
+        <rect x="292" y="238" width="136" height="68" rx="8" fill="#ffffff" stroke="#d6520e" stroke-width="0.8"/>
+        <text class="th" x="360" y="262" text-anchor="middle" dominant-baseline="central">STM32 MCU</text>
+        <text class="ts" x="360" y="280" text-anchor="middle" dominant-baseline="central">real-time capture</text>
+        <!-- left sensors -->
+        <rect x="60" y="128" width="150" height="52" rx="8" fill="#e9f0fb" stroke="#2f6db0" stroke-width="1"/>
+        <text class="th" x="135" y="148" text-anchor="middle" dominant-baseline="central">IMU</text>
+        <text class="ts" x="135" y="166" text-anchor="middle" dominant-baseline="central">accel + gyro</text>
+        <rect x="60" y="200" width="150" height="52" rx="8" fill="#e9f0fb" stroke="#2f6db0" stroke-width="1"/>
+        <text class="th" x="135" y="220" text-anchor="middle" dominant-baseline="central">IR-UWB radar</text>
+        <text class="ts" x="135" y="238" text-anchor="middle" dominant-baseline="central">Novelda XeThru</text>
+        <rect x="60" y="272" width="150" height="52" rx="8" fill="#e9f0fb" stroke="#2f6db0" stroke-width="1"/>
+        <text class="th" x="135" y="292" text-anchor="middle" dominant-baseline="central">Gas + temp</text>
+        <text class="ts" x="135" y="310" text-anchor="middle" dominant-baseline="central">CO · °C safety</text>
+        <!-- right outputs -->
+        <rect x="500" y="100" width="170" height="52" rx="8" fill="#f5f7f9" stroke="#8a94a0" stroke-width="1"/>
+        <text class="th" x="585" y="120" text-anchor="middle" dominant-baseline="central">LED / buzzer</text>
+        <text class="ts" x="585" y="138" text-anchor="middle" dominant-baseline="central">standalone alert</text>
+        <rect x="500" y="180" width="170" height="52" rx="8" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="585" y="200" text-anchor="middle" dominant-baseline="central">BLE / Wi-Fi Direct</text>
+        <text class="ts" x="585" y="218" text-anchor="middle" dominant-baseline="central">→ firefighter phone</text>
+        <!-- battery -->
+        <rect x="300" y="362" width="120" height="44" rx="8" fill="#f5f7f9" stroke="#8a94a0" stroke-width="1"/>
+        <text class="th" x="360" y="384" text-anchor="middle" dominant-baseline="central">Li-ion battery</text>
+      </svg>
+    </div>
+    <figcaption><b>Figure 2</b> — Edge node: sensors connect to the UNO&nbsp;Q (STM32 captures in real time; the MPU runs AI and the wireless link). Interfaces labelled.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th>Peripheral</th><th>Interface</th><th>Role / function</th></tr></thead>
+    <tbody>
+      <tr><td>IR-UWB radar — Novelda XeThru X4 (X4M200 respiration / X4M300 presence; X4F103 dev kit)</td><td><code>SPI / USB</code></td><td>Penetrates smoke, walls, and doors; provides presence, motion, range, and respiration. Core sensor.</td></tr>
+      <tr><td>IMU (6/9-axis accel + gyro, optional magnetometer; foot-mounted variant)</td><td><code>I²C / Qwiic</code></td><td>Sweep motion-compensation, victim localization, and firefighter dead-reckoning across the floor plan.</td></tr>
+      <tr><td>Gas + temperature sensor (CO, °C)</td><td><code>I²C / Qwiic</code></td><td>Atmosphere and flashover safety — is the void safe to enter.</td></tr>
+      <tr><td>USB thermal / IR camera (optional)</td><td><code>USB-C</code></td><td>Visible-and-smoke layer fused with the radar; the modality the camera still adds.</td></tr>
+      <tr><td>On-board LED matrix / buzzer</td><td><code>GPIO</code></td><td>Standalone "contact detected" indicator — the node works even with no phone attached.</td></tr>
+      <tr><td>Li-ion battery pack</td><td><code>USB-C 5V</code></td><td>Portable power (board peaks ≈4.5&nbsp;W), hours of runtime.</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Alternatives to the XeThru radar if needed: SensorLogic <code>SLMX4</code> (used by several public datasets), or Acconeer pulsed-coherent modules (cheaper, but better suited to thin partitions than thick walls). Production also needs a heat-hardened enclosure — the demo does not.</div>
+
+  <h2 id="net"><span class="sx">§07</span>Connection network</h2>
+  <p>The network is infrastructure-free where it must be, and uses scene and uplink connectivity where it is available. No personal or location data ever crosses an external link the operator did not establish.</p>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 720 400" role="img" aria-label="Network topology: firefighter units (node plus phone, paired over BLE) inside the structure connect over Wi-Fi or a scene mesh to a command-post PC, which connects to the cloud over an opportunistic uplink.">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#5b6470" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- structure container -->
+        <rect x="40" y="60" width="262" height="250" rx="12" fill="#f5f7f9" stroke="#8a94a0" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="ts" x="60" y="84" text-anchor="start">Inside structure — no infrastructure</text>
+        <rect x="60" y="104" width="222" height="64" rx="8" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="171" y="126" text-anchor="middle" dominant-baseline="central">Firefighter unit 1</text>
+        <text class="ts" x="171" y="144" text-anchor="middle" dominant-baseline="central">UNO Q + phone · paired BLE</text>
+        <rect x="60" y="206" width="222" height="64" rx="8" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="171" y="228" text-anchor="middle" dominant-baseline="central">Firefighter unit 2</text>
+        <text class="ts" x="171" y="246" text-anchor="middle" dominant-baseline="central">UNO Q + phone · paired BLE</text>
+        <!-- links to PC -->
+        <line x1="282" y1="136" x2="378" y2="166" stroke="#5b6470" stroke-width="1.4" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+        <line x1="282" y1="238" x2="378" y2="200" stroke="#5b6470" stroke-width="1.4" marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+        <text class="ts" x="320" y="186" text-anchor="middle">Wi-Fi mesh · 2-way</text>
+        <!-- PC -->
+        <rect x="382" y="150" width="180" height="64" rx="10" fill="#e3f3ee" stroke="#0f7a5f" stroke-width="1"/>
+        <text class="th" x="472" y="172" text-anchor="middle" dominant-baseline="central">Command post</text>
+        <text class="ts" x="472" y="190" text-anchor="middle" dominant-baseline="central">Copilot+ PC · X2 Elite</text>
+        <!-- PC to cloud -->
+        <line x1="472" y1="214" x2="472" y2="298" stroke="#5b6470" stroke-width="1.4" stroke-dasharray="6 4" marker-end="url(#ar3)"/>
+        <text class="ts" x="482" y="256" text-anchor="start">uplink · cellular / sat</text>
+        <!-- cloud -->
+        <rect x="382" y="300" width="180" height="56" rx="10" fill="#f1f3f6" stroke="#8a94a0" stroke-width="1" stroke-dasharray="6 4"/>
+        <text class="th" x="472" y="320" text-anchor="middle" dominant-baseline="central">Cloud AI 100</text>
+        <text class="ts" x="472" y="338" text-anchor="middle" dominant-baseline="central">opportunistic</text>
+      </svg>
+    </div>
+    <figcaption><b>Figure 3</b> — Network topology. Solid links are always available locally and two-way (positions flow up, the fused team map flows back to every phone); the dashed cloud link is opportunistic. Each tier operates if the one above it is unreachable.</figcaption>
+  </figure>
+
+  <p>Within a unit, the node streams compact detections to the phone over <strong>BLE or Wi-Fi Direct</strong> (no router needed). The phone outputs to the firefighter through the <strong>comms radio / a mask HUD</strong>. Multiple units reach the command-post PC over <strong>scene Wi-Fi or a mesh node</strong>; the PC aggregates them, and this scene link is <strong>two-way</strong> — the PC pushes the fused team picture back to every phone, so each firefighter sees the others' positions. If the PC link drops, each phone keeps its own tracking and victim cue and loses only the shared team view. The PC reaches the cloud only over the command vehicle's <strong>opportunistic cellular or satellite uplink</strong>. Latency budget: real-time radar capture on the STM32 (milliseconds), on-device inference under ~100&nbsp;ms on the MPU, near-real-time UI and spoken cue.</p>
+
+  <h2 id="working"><span class="sx">§08</span>How it works</h2>
+
+  <h3>8.1 — Seeing through smoke and walls</h3>
+  <p>The radar emits ultra-wideband pulses and reads the reflections. Radio at these frequencies passes through smoke and common non-metallic walls and doors, and the human body reflects it. Echo delay gives distance (range bins); a person is found by the motion in those bins.</p>
+
+  <h3>8.2 — Detecting breathing</h3>
+  <p>Respiration falls out of watching a location over time rather than a single snapshot. The radar sweeps rapidly and repeatedly; the chest wall moves a few millimetres in and out with each breath, so the chest's echo oscillates between sweeps at the breathing rate (≈0.2–0.5&nbsp;Hz, i.e. 12–30 breaths/min). A frequency analysis of that oscillation shows a clear peak at the breathing rate. The heartbeat is the same idea — smaller, faster (≈0.8–2&nbsp;Hz) — and much harder to isolate.</p>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 720 300" role="img" aria-label="The radar node emits UWB pulses that pass through a wall, reflect off a living person whose chest moves with breathing, and the chest motion over time becomes a breathing waveform giving a rate.">
+        <defs>
+          <marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#8a94a0" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <!-- node -->
+        <rect x="40" y="110" width="130" height="64" rx="10" fill="#fbe9df" stroke="#d6520e" stroke-width="1"/>
+        <text class="th" x="105" y="134" text-anchor="middle" dominant-baseline="central">UNO Q + radar</text>
+        <text class="ts" x="105" y="152" text-anchor="middle" dominant-baseline="central">emits UWB pulses</text>
+        <!-- emission arcs -->
+        <path d="M180 130 Q198 142 180 154" fill="none" stroke="#d6520e" stroke-width="1.4"/>
+        <path d="M188 124 Q212 142 188 160" fill="none" stroke="#d6520e" stroke-width="1.4"/>
+        <path d="M196 118 Q226 142 196 166" fill="none" stroke="#d6520e" stroke-width="1.4"/>
+        <!-- wall -->
+        <rect x="290" y="74" width="14" height="150" fill="#d3d8de" stroke="#9aa3ad" stroke-width="1"/>
+        <line x1="291" y1="92" x2="303" y2="80" stroke="#9aa3ad" stroke-width="0.8"/>
+        <line x1="291" y1="120" x2="303" y2="108" stroke="#9aa3ad" stroke-width="0.8"/>
+        <line x1="291" y1="148" x2="303" y2="136" stroke="#9aa3ad" stroke-width="0.8"/>
+        <line x1="291" y1="176" x2="303" y2="164" stroke="#9aa3ad" stroke-width="0.8"/>
+        <text class="ts" x="297" y="240" text-anchor="middle">wall / door</text>
+        <!-- person -->
+        <circle cx="392" cy="104" r="13" fill="#eef1f5" stroke="#15181d" stroke-width="1.5"/>
+        <rect x="380" y="118" width="24" height="54" rx="10" fill="#eef1f5" stroke="#15181d" stroke-width="1.5"/>
+        <line x1="388" y1="170" x2="384" y2="212" stroke="#15181d" stroke-width="2" stroke-linecap="round"/>
+        <line x1="400" y1="170" x2="404" y2="212" stroke="#15181d" stroke-width="2" stroke-linecap="round"/>
+        <line x1="380" y1="130" x2="366" y2="158" stroke="#15181d" stroke-width="2" stroke-linecap="round"/>
+        <line x1="404" y1="130" x2="420" y2="158" stroke="#15181d" stroke-width="2" stroke-linecap="round"/>
+        <line x1="372" y1="140" x2="360" y2="140" stroke="#0f7a5f" stroke-width="2" marker-start="url(#ar4)" marker-end="url(#ar4)"/>
+        <text class="ts" x="392" y="240" text-anchor="middle">living person (breathing)</text>
+        <!-- data arrow to waveform -->
+        <line x1="408" y1="140" x2="516" y2="140" stroke="#8a94a0" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ar4)"/>
+        <text class="ts" x="462" y="126" text-anchor="middle">chest motion over time</text>
+        <!-- waveform -->
+        <text class="th" x="600" y="96" text-anchor="middle" dominant-baseline="central">what the radar sees</text>
+        <path d="M524 140 Q546 114 568 140 Q590 166 612 140 Q634 114 656 140 Q668 128 676 134" fill="none" stroke="#0f7a5f" stroke-width="2"/>
+        <text class="th" x="600" y="196" text-anchor="middle" dominant-baseline="central">≈ 14 breaths / min</text>
+      </svg>
+    </div>
+    <figcaption><b>Figure 4</b> — Working principle: pulses pass through the barrier, reflect off the person, and the chest's millimetre motion over time becomes a breathing waveform — the "is it alive" signal. Static objects produce no such oscillation.</figcaption>
+  </figure>
+
+  <h3>8.3 — The motion problem &amp; the detect-then-confirm workflow</h3>
+  <p>The hardest technical issue: when the sensor is worn on a <em>moving</em> firefighter, the firefighter's own body motion (centimetres to tens of centimetres) is 10–100× larger than the chest's breathing motion (millimetres) and swamps it. You cannot filter that out mid-stride. The system is designed around this with <strong>detect-then-confirm</strong>: while advancing, motion detection gives direction ("contact, that way"); the firefighter stops at the threshold for a few seconds, and only during that still dwell is breathing confirmed. Residual sway is removed by <strong>IMU motion compensation</strong> — the accelerometer/gyro measures the sensor's own motion, which is subtracted from the radar track before the breathing analysis (the same approach airborne rescue radar uses for platform drift). A CNN trained on motion-inclusive, IMU-synchronized data learns the cancellation rather than hand-tuned filters. The system leads with <strong>presence + breathing</strong> as the "alive" signal; heart rate is a stretch goal.</p>
+
+  <h3>8.4 — Localizing the victim</h3>
+  <p>One reading from one position gives range, not a position. As the firefighter sweeps from slightly different spots, the phone fuses successive ranges with its IMU to triangulate the victim's location relative to the responder — "living person, ~2&nbsp;m, behind this wall, low to the floor."</p>
+
+  <h3>8.5 — Tracking the firefighter across the blueprint</h3>
+  <p>Indoors GPS fails, so firefighter position comes from <strong>IMU pedestrian dead reckoning</strong>: the gyro gives heading, the accelerometer detects each footstep, and the path is integrated from a known origin (the entry door = map origin) across the floor plan already loaded for the occupancy prior; a barometer adds the floor. Dead reckoning drifts, so it is anchored by a <strong>zero-velocity update</strong> at each footfall (foot-mounted IMU), <strong>map-matching</strong> to corridors and doors, and optional <strong>UWB anchors</strong> dropped at the entry for occasional absolute fixes. The system keeps a <strong>position trail</strong> for each firefighter — a live "where is everyone" view, a way to grey out already-swept rooms, and, for free, the downed-firefighter's last-known location. Honest accuracy: a few metres of absolute position over a mission (enough to place a contact in the right room), with the relative victim cue accurate to sub-metre.</p>
+
+  <h3>8.6 — At the command post</h3>
+  <p>The PC fuses all firefighters and detections into one building map, runs occupancy-likelihood prediction to prioritise the search, raises the downed-firefighter alarm (motion-stop plus the wearer's own vitals — an enhanced PASS alarm), and the on-device language model writes the commander's situation report and answers questions. It also pushes the fused team positions back to each firefighter's phone, so every responder sees their teammates on their own screen — shared awareness computed once on the PC's single map, not by each phone tracking the others. RF homing lets responders walk straight to a downed colleague's UWB tag through smoke.</p>
+
+  <h3>8.7 — Data flow recap</h3>
+  <p>Raw RF echo (node, real-time) → confirmed detection (node MPU, offline) → relative position and firefighter track (phone, offline) → fused building map and situation report (PC NPU, local) → occupancy prediction and multi-site picture (cloud, opportunistic). The product gets smaller and more abstract at every step up. Two flows run back down: the cloud's occupancy heatmap to the PC, and the PC's fused team positions to every phone — so awareness that needs the whole picture is computed once, centrally, and distributed.</p>
+
+  <h2 id="ai"><span class="sx">§09</span>AI / ML pipeline &amp; toolchain</h2>
+  <p><strong>On the node:</strong> clutter removal → range-FFT → micro-Doppler / breathing analysis → a small CNN classifier, deployed via Edge Impulse (the UNO&nbsp;Q's native TinyML path) or TensorFlow Lite on the Dragonwing MPU; the STM32 handles real-time capture.</p>
+  <p><strong>On the phone:</strong> a small on-device language model (e.g. Llama&nbsp;3.2&nbsp;3B) exported through Qualcomm AI Hub to QNN/Genie and run on the NPU (ONNX is the NPU path on Snapdragon, not GGUF), giving offline spoken guidance with speech in/out.</p>
+  <p><strong>On the PC:</strong> the fusion and prediction models plus a larger on-device LLM with retrieval grounded in the building floor plan (e.g. AnythingLLM running on the Hexagon NPU, ~45&nbsp;TOPS), all private and offline-capable.</p>
+  <p><strong>In the cloud:</strong> the heavier occupancy-likelihood model, and — as future work — retraining of the edge detector from aggregated data.</p>
+  <p><strong>Toolchain:</strong> Qualcomm AI Hub + <code>qai_hub_models</code> (supports Snapdragon X&nbsp;Elite and X2&nbsp;Elite — the award hardware), QNN / QAIRT, the Genie LLM runtime, ONNX Runtime, Edge Impulse, TensorFlow Lite, and Arduino App Lab.</p>
+
+  <h2 id="data"><span class="sx">§10</span>Datasets</h2>
+  <p>To make a 24-hour build credible, the detector is pretrained on public IR-UWB data and fine-tuned on-site. Two halves must be covered: <em>detect-through-the-barrier</em> and <em>confirm-alive</em>.</p>
+  <ul>
+    <li><strong>Through-wall detection</strong> — a dataset built specifically for victim detection behind walls/obstacles with a UWB radar sensor.</li>
+    <li><strong>Vitals under motion</strong> — <code>nesl/MobiVital</code> (IR-UWB chest signals with synchronized IMU and ground-truth respiration), and <code>RadarDataforCSBHRD</code> (breathing + heart rate, including during activity). Note: these are close-range, line-of-sight, cooperative subjects — good for vitals extraction, not through-wall — so pair them with the through-wall set.</li>
+    <li><strong>Optional gesture control</strong> — <code>UWB-gestures</code>, 9,600 labelled samples.</li>
+    <li><strong>Hub</strong> — <code>awesome-radar-perception</code>, a curated index of radar datasets and detection / domain-adaptation papers.</li>
+  </ul>
+
+  <h2 id="demo"><span class="sx">§11</span>Demonstration plan</h2>
+  <p>The 24-hour build delivers one vertical slice: a single UNO&nbsp;Q with one IR-UWB module detecting presence, distance, and breathing through a partition; the phone showing the live cue; the PC showing a fused map with one LLM situation line. The cloud runs as a thin sync stub or a second site on a slide.</p>
+  <div class="note"><strong>The demo moment:</strong> a smoke machine, a partition with a closed door, and a hidden person. The "firefighter" advances with an obscured visor, pauses at the door, and — before breaching — gets the hands-free cue "<em>living person detected, ~2&nbsp;m, behind this door, breathing</em>," while the command-post screen lights up the contact on its map. The detect-then-confirm flow (walk up, pause, sweep) is the real intended workflow, and a genuinely smoke-immune radar makes the demo authentic rather than simulated.</div>
+
+  <h2 id="challenges"><span class="sx">§12</span>Feasibility &amp; challenges addressed</h2>
+  <ul>
+    <li><strong>Respiration from a moving worn sensor</strong> — solved with detect-then-confirm, IMU motion compensation, and a motion-trained CNN; presence + breathing lead, heart rate is a stretch.</li>
+    <li><strong>Justifying the cloud</strong> — scoped to opportunistic occupancy-likelihood prediction and made non-blocking, so it reinforces graceful degradation instead of undermining the offline thesis.</li>
+    <li><strong>The phone as more than a screen</strong> — it runs localization, firefighter tracking, and the guidance SLM on its NPU; the display is the output of real compute.</li>
+    <li><strong>Firefighter self-localization</strong> — IMU dead reckoning across the blueprint, anchored by zero-velocity updates, map-matching, and optional UWB fixes; a decades-old hard problem, so absolute accuracy is claimed at a few metres, the relative cue at sub-metre.</li>
+    <li><strong>Downed firefighter</strong> — rides on the same sensors: motion-stop plus vitals for detection, last-known trail point for location, UWB homing to reach them through smoke.</li>
+  </ul>
+
+  <h2 id="novelty"><span class="sx">§13</span>Novelty</h2>
+  <p>The physics is proven (through-wall UWB vital-sign detection), the AI is proven (RF-based pose and localization), and individual pieces of the firefighter stack already exist — SmokeNav (mmWave + IMU for responder navigation), C-THRU (a thermal see-through-smoke HUD), and POINTER (responder tracking). But none of them fuse <strong>(1)</strong> commodity RF that confirms a <em>living</em> victim through smoke and walls, <strong>(2)</strong> the detection AI running <em>on the sensor node itself</em>, <strong>(3)</strong> a hands-free responder unit that localizes the victim, and <strong>(4)</strong> a command-level coordination and occupancy-prediction layer — as one distributed multi-device system on Snapdragon silicon. That integration is the contribution, and it is low-risk precisely because every ingredient is independently validated.</p>
+
+  <h2 id="future"><span class="sx">§14</span>Future scope</h2>
+  <ul>
+    <li><strong>Federated, privacy-preserving training</strong> across many fire services, so the shared models improve without centralizing sensitive incident data.</li>
+    <li><strong>3D pose and skeletons</strong> — moving from presence to RF-based posture (the RF-Pose direction) to tell a slumped victim from a moving one.</li>
+    <li><strong>Multi-victim simultaneous tracking</strong> and antenna-array imaging for richer through-wall scenes.</li>
+    <li><strong>Heart-rate during stationary dwells</strong> as signal processing and models improve.</li>
+    <li><strong>Integration with building systems</strong> — fire-safety panels, pre-plans, and dispatch / CAD, so the occupancy prior is live and authoritative.</li>
+    <li><strong>Productization</strong> — heat-hardened enclosure, ruggedization, and certification for field use.</li>
+    <li><strong>Adjacent applications</strong> — earthquake search-and-rescue, privacy-preserving elder-care fall detection, and secure presence sensing.</li>
+  </ul>
+
+  <h2 id="refs"><span class="sx">§15</span>References</h2>
+  <p style="color:var(--slate);font-size:14px">Selected prior art grounding the feasibility and novelty claims. Through-wall sensing, RF-based localization, search-and-rescue / firefighting systems, on-device edge AI, datasets, and the hardware / SDK stack.</p>
+  <ol class="refs">
+    <li>M. Zhao, T. Li, M. Abu Alsheikh, Y. Tian, H. Zhao, A. Torralba, D. Katabi. "Through-Wall Human Pose Estimation Using Radio Signals" (RF-Pose). <span class="v">CVPR, 2018; MIT CSAIL.</span></li>
+    <li>F. Adib, Z. Kabelac, D. Katabi, R. C. Miller. "WiTrack: 3D Tracking via Body Radio Reflections." <span class="v">USENIX NSDI, 2014.</span></li>
+    <li>F. Adib, D. Katabi. "See Through Walls with WiFi." <span class="v">ACM SIGCOMM, 2013.</span></li>
+    <li>"Ultra-Wideband Impulse Radar Through-Wall Detection of Vital Signs." <span class="v">Scientific Reports, 2018.</span></li>
+    <li>"Experimental study of through-wall human detection using ultra wideband radar sensors." <span class="v">Measurement, 2013.</span></li>
+    <li>"Multiple Stationary Human Targets Detection in Through-Wall UWB Radar Based on Convolutional Neural Network." <span class="v">Applied Sciences, 2022.</span></li>
+    <li>"The Overview of Human Localization and Vital Sign Signal Measurement Using Handheld IR-UWB Through-Wall Radar." <span class="v">Sensors, 2021.</span></li>
+    <li>"Review — Microwave Radar Sensing Systems for Search and Rescue Purposes." <span class="v">Sensors, 2019.</span></li>
+    <li>"A Multi-Target Localization and Vital Sign Detection Method Using Ultra-Wide Band Radar." <span class="v">Sensors, 2023.</span></li>
+    <li>"Advancing Remote Life Sensing for Search and Rescue: Precise Vital Signs Detection via Airborne UWB Radar." <span class="v">Sensors, 2025.</span></li>
+    <li>R. Chen et&nbsp;al. "SmokeNav: Millimeter-Wave-Radar / IMU Integrated Positioning and Semantic Mapping in Visually Degraded Environments for First Responders." <span class="v">Advanced Intelligent Systems, 2024.</span></li>
+    <li>Qwake Technologies / DHS S&amp;T. "C-THRU" helmet-mounted see-through-smoke navigation system. <span class="v">DHS Science &amp; Technology Directorate.</span></li>
+    <li>NASA JPL / DHS S&amp;T. "POINTER: Precision Outdoor and Indoor Navigation and Tracking for Emergency Responders."</li>
+    <li>S. H. Choi, H. Yoon. "Convolutional Neural Networks for the Real-Time Monitoring of Vital Signs Based on IR-UWB Radar during Sleep." <span class="v">Sensors, 2023.</span></li>
+    <li>"Nmr-VSM: Non-Touch Motion-Robust Vital Sign Monitoring via UWB Radar Based on Deep Learning." <span class="v">Sensors, 2023.</span></li>
+    <li>A. Lambrecht et&nbsp;al. "Low-cost Embedded Breathing Rate Determination Using 802.15.4z IR-UWB Hardware for Remote Healthcare." <span class="v">arXiv, 2025.</span></li>
+    <li>S. Ahmed, D. Wang, J. Park, S. H. Cho. "UWB-gestures: a public dataset of dynamic hand gestures acquired using impulse radar sensors." <span class="v">Scientific Data, 2021.</span></li>
+    <li>Datasets: <code>nesl/MobiVital</code>; <code>jocelynZXY/RadarDataforCSBHRD</code>; "A Dataset for Aftermath Victim Detection Behind Walls or Obstacles Using a UWB Radar Sensor"; <code>ZHOUYI1023/awesome-radar-perception</code>.</li>
+    <li>Hardware: Novelda XeThru X4 / X4M200 / X4M300 / X4F103 IR-UWB radar; SensorLogic SLMX4; Arduino UNO&nbsp;Q (Qualcomm Dragonwing QRB2210 + STM32U585).</li>
+    <li>Software: Qualcomm AI Hub &amp; <code>qai_hub_models</code>; Qualcomm AI Runtime (QNN / QAIRT); Genie LLM runtime; ONNX Runtime; Edge Impulse; TensorFlow Lite; Arduino App Lab.</li>
+  </ol>
+
+  <hr>
+  <p style="color:var(--faint);font-size:13px;font-family:'IBM Plex Mono',monospace">Vision-X — design document · prepared for the Snapdragon Multiverse Hackathon, Bengaluru. Accuracy figures are honest engineering estimates; production deployment requires ruggedization and certification.</p>
+
+</div>

@@ -1,0 +1,63 @@
+# ---- Datasets & models (never vendored — referenced only) ----
+data/
+datasets/
+*.h5
+*.onnx
+*.tflite
+*.pte
+*.bin
+*.pt
+*.ckpt
+*.weights
+models/**/checkpoints/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# ---- Node / mobile (JS) ----
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# ---- Android / mobile native ----
+*.apk
+*.aab
+*.keystore
+.gradle/
+local.properties
+
+# ---- Arduino / C / C++ / embedded ----
+*.o
+*.a
+*.elf
+*.hex
+*.map
+.pio/
+.build/
+
+# ---- Qualcomm / AI toolchains (large generated artifacts) ----
+*.qnn
+*.dlc
+*.serialized
+qai_hub_cache/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# ---- Agent / local tooling ----
+.claude/
