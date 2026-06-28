@@ -58,7 +58,7 @@ Vision-X is a four-device AI system that helps firefighters and rescue teams loc
 | **What** | A see-through-walls, across-rooms "is-it-alive" sense for firefighters, distributed across four Snapdragon-class devices. |
 | **How** | IR-UWB radar passes through walls and doors into the next room — and through smoke; on-device AI confirms a living person from the millimetre motion of breathing. |
 | **Why multi-device** | One capability is split so each device does **only what that device can** — and **every tier keeps working if the one above it loses connectivity**. |
-| **The demo** | A hidden person in the next room → the firefighter, on the other side of a solid wall, pauses and hears *"living person, ~2 m, behind this wall, breathing"* before entering — and it still works with the room full of smoke. |
+| **The demo** | A hidden person in the next room → the firefighter, on the other side of a solid wall, pauses and detects *"living person, ~2 m, behind this wall, breathing"* before entering — and it still works with the room full of smoke. |
 | **Why it's low-risk** | Every ingredient (through-wall UWB vitals, RF localization, on-device AI) is independently proven. **The integration is the contribution.** |
 
 ---
